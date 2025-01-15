@@ -46,19 +46,11 @@ if ($result) {
     $error = "Fehler beim Abrufen der Reservierungen: " . $conn->error;
 }
 ?>
-<!DOCTYPE html>
-<html lang="de">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zimmer Reservieren</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
 
 <body class="bg-light">
     <div class="container mt-5">
+        
         <h1 class="text-center text-primary" style="color: #1587e5;">Zimmer Reservierungen</h1>
 
         <!-- Fehlermeldungen anzeigen -->
@@ -76,15 +68,15 @@ if ($result) {
                 <h2>Neue Reservierung anlegen</h2>
             </div>
             <div class="card-body">
-                <form method="POST">
-                    <div class="mb-3">
-                        <label for="checkin" class="form-label">Anreisedatum:</label>
-                        <input type="date" name="checkin" id="checkin" class="form-control" required>
+                <form action="../logic/reservation.handler.php" method="POST">
+                   <div class="mb-3">
+                        <label for="checkin_date" class="form-label">Anreisedatum:</label>
+                        <input type="date" name="checkin_date" id="checkin_date" class="form-control" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="checkout" class="form-label">Abreisedatum:</label>
-                        <input type="date" name="checkout" id="checkout" class="form-control" required>
+                        <label for="checkout_date" class="form-label">Abreisedatum:</label>
+                        <input type="date" name="checkout_date" id="checkout_date" class="form-control" required>
                     </div>
 
                     <div class="form-check mb-3">
@@ -98,8 +90,8 @@ if ($result) {
                     </div>
 
                     <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" name="pets" id="pets">
                         <label for="pets" class="form-check-label">Haustiere mitnehmen</label>
+                        <input type="checkbox" class="form-check-input" name="pets" id="pets">
                     </div>
 
                     <button type="submit" name="new_reservation" class="btn btn-success">Reservierung anlegen</button>
@@ -151,7 +143,9 @@ if ($result) {
         </div>
     </div>
 
-    <?php include '../includes/footer.php'; ?>
 </body>
+</html>
+<?php include '../includes/footer.php'; ?>
 
 </html>
+

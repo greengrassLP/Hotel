@@ -10,16 +10,15 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 ?>
 
-    <title>Willkommen</title>
+<title>Willkommen</title>
 <body>
     <div class="welcome-container">
         <h1>Willkommen, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
         <p>Sie sind erfolgreich eingeloggt.</p>
         <div class="welcome-actions">
-            <a href="user.overview.php" class="action-button">Benutzerverwaltung</a>
+            <a href="user.overview.php" class="action-button">User</a>
             <a href="reservation.overview.php" class="action-button2">Reservierungen</a>
-            <a href="newsletter.overview.php" class="action-button2">Newsletter Übersicht</a>
-            <a href="upload.php" class="action-button2">Newsletter-Beitrag erstellen</a>
+            <a href="newsbeitrag.overview.php" class="action-button2">News-Beiträge Übersicht</a>
         </div>
     </div>
 </body>
