@@ -79,7 +79,10 @@ include '../includes/header.php';
                         <td>${user.email}</td>
                         <td>${user.role}</td>
                         <td>${user.status}</td>
-                        <td><button onclick="editUser(${user.id})">Bearbeiten</button></td>
+                        <td>
+                            <button onclick="editUser(${user.id})">Bearbeiten</button>
+                            <button onclick="viewReservations(${user.id})">Reservierungen</button>
+                        </td>
                     </tr>
                     <tr id="edit-row-${user.id}" style="display:none">
                         <td colspan="9">
@@ -128,6 +131,11 @@ include '../includes/header.php';
             } else {
                 alert('Fehler beim Aktualisieren des Benutzers.');
             }
+        }
+
+        function viewReservations(userId) {
+            // Weiterleitung zur Reservierungsseite mit der Benutzer-ID
+            window.location.href = `reservation.overview.php?user_id=${userId}`;
         }
 
         window.onload = fetchUsers;
