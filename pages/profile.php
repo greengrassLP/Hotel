@@ -69,6 +69,7 @@ include '../dbconnection.php';
         <div class="profile-section">
         <form action="../logic/profile.handler.php" method="POST">
             <h2>Passwort ändern</h2>
+            <input type="hidden" name="changePassword" value="1">
                 <div class="form-group">
                     <label for="oldPassword">Altes Passwort</label>
                     <input type="password" id="oldPassword" name="oldPassword" required>
