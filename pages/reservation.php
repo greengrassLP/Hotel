@@ -1,63 +1,50 @@
 <?php
 require_once '../config.php';
+require_once '../dbconnection.php';
 include '../includes/header.php';
 
-// Überprüfen, ob der Benutzer eingeloggt ist
-/*
-if (!isset($_SESSION['user'])) {
-    echo "Bitte loggen Sie sich ein, um Reservierungen vorzunehmen.";
-    exit;
-}*/
-
-// Statische Reservierungsdaten
-$reservations = [
-    [
-        'id' => 1,
-        'checkin' => '2024-11-25',
-        'checkout' => '2024-11-30',
-        'breakfast' => true,
-        'parking' => false,
-        'pets' => true,
-        'status' => 'bestätigt',
-    ],
-    [
-        'id' => 2,
-        'checkin' => '2024-12-05',
-        'checkout' => '2024-12-10',
-        'breakfast' => false,
-        'parking' => true,
-        'pets' => false,
-        'status' => 'neu',
-    ],
-];
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 // Neue Reservierung hinzufügen
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_reservation'])) {
     $checkin = $_POST['checkin'];
     $checkout = $_POST['checkout'];
-    $breakfast = isset($_POST['breakfast']);
-    $parking = isset($_POST['parking']);
-    $pets = isset($_POST['pets']);
+    $breakfast = isset($_POST['breakfast']) ? 1 : 0;
+    $parking = isset($_POST['parking']) ? 1 : 0;
+    $pets = isset($_POST['pets']) ? 1 : 0;
+    $price = rand(100, 500); // Beispielhafter Preis, anpassbar nach Bedarf
+    $status = 'neu';
 
     // Validierung
     if (strtotime($checkout) <= strtotime($checkin)) {
-        echo "Das Abreisedatum darf nicht vor oder gleich dem Anreisedatum sein.";
+        $error = "Das Abreisedatum darf nicht vor oder gleich dem Anreisedatum sein.";
     } else {
-        $new_reservation = [
-            'id' => count($reservations) + 1,
-            'checkin' => $checkin,
-            'checkout' => $checkout,
-            'breakfast' => $breakfast,
-            'parking' => $parking,
-            'pets' => $pets,
-            'status' => 'neu',
-        ];
-        $reservations[] = $new_reservation;
-        echo "Reservierung erfolgreich angelegt.";
+        $query = "INSERT INTO reservations (user_id, checkin_date, checkout_date, breakfast, parking, pets, price, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($query);
+        $user_id = $_SESSION['id'] ?? 1; // Ersetzen mit der tatsächlichen Benutzer-ID aus der Session
+
+        $stmt->bind_param('issiiisi', $user_id, $checkin, $checkout, $breakfast, $parking, $pets, $price, $status);
+
+        if ($stmt->execute()) {
+            $success = "Reservierung erfolgreich angelegt.";
+        } else {
+            $error = "Fehler beim Hinzufügen der Reservierung: " . $conn->error;
+        }
     }
 }
 
-// HTML-Formular und Liste anzeigen
+// Alle Reservierungen abrufen
+$reservations = [];
+$query = "SELECT * FROM reservations ORDER BY creation_date DESC";
+$result = $conn->query($query);
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $reservations[] = $row;
+    }
+} else {
+    $error = "Fehler beim Abrufen der Reservierungen: " . $conn->error;
+}
 ?>
 
 
@@ -65,6 +52,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_reservation'])) {
     <div class="container mt-5">
         
         <h1 class="text-center text-primary" style="color: #1587e5;">Zimmer Reservierungen</h1>
+
+        <!-- Fehlermeldungen anzeigen -->
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
+
+        <?php if (!empty($success)): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+        <?php endif; ?>
 
         <!-- Neue Reservierung -->
         <div class="card mt-4">
@@ -119,19 +115,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_reservation'])) {
                                 <th>Frühstück</th>
                                 <th>Parkplatz</th>
                                 <th>Haustiere</th>
+                                <th>Preis</th>
                                 <th>Status</th>
+                                <th>Erstellt am</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($reservations as $reservation): ?>
                                 <tr>
                                     <td><?= $reservation['id'] ?></td>
-                                    <td><?= $reservation['checkin'] ?></td>
-                                    <td><?= $reservation['checkout'] ?></td>
+                                    <td><?= $reservation['checkin_date'] ?></td>
+                                    <td><?= $reservation['checkout_date'] ?></td>
                                     <td><?= $reservation['breakfast'] ? 'Ja' : 'Nein' ?></td>
                                     <td><?= $reservation['parking'] ? 'Ja' : 'Nein' ?></td>
                                     <td><?= $reservation['pets'] ? 'Ja' : 'Nein' ?></td>
+                                    <td><?= htmlspecialchars($reservation['price']) ?> EUR</td>
                                     <td><?= ucfirst($reservation['status']) ?></td>
+                                    <td><?= $reservation['creation_date'] ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -146,3 +146,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_reservation'])) {
 </body>
 </html>
 <?php include '../includes/footer.php'; ?>
+
+</html>
+
