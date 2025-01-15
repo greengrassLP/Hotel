@@ -2,7 +2,6 @@
 require_once '../config.php';
 require_once '../dbconnection.php';
 
-
 if (!isset($_SESSION['id'])) {
     header("Location: ../pages/login.php");
     exit();
@@ -20,7 +19,9 @@ $result = $stmt->get_result();
 if ($result->num_rows === 1) {
     $user = $result->fetch_assoc();
 } else {
-    die("Benutzer nicht gefunden.");
+    $_SESSION['change_error'] = 'Benutzer nicht gefunden.';
+    header("Location: ../pages/profile.php");
+    exit();
 }
 
 // Wenn das Formular abgesendet wurde
@@ -33,12 +34,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Überprüfen, ob das alte Passwort korrekt ist
         if (!password_verify($oldPassword, $user['password'])) {
-            die("Das alte Passwort ist falsch.");
+            $_SESSION['change_error'] = 'Das alte Passwort ist falsch.';
+            header("Location: ../pages/profile.php");
+            exit();
         }
 
         // Überprüfen, ob das neue Passwort mit der Bestätigung übereinstimmt
         if ($newPassword !== $confirmPassword) {
-            die("Die neuen Passwörter stimmen nicht überein.");
+            $_SESSION['change_error'] = 'Die neuen Passwörter stimmen nicht überein.';
+            header("Location: ../pages/profile.php");
+            exit();
         }
 
         // Neues Passwort hashen und aktualisieren
@@ -48,10 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param('si', $hashedPassword, $id);
 
         if ($stmt->execute()) {
-            echo "Passwort erfolgreich geändert.";
+            $_SESSION['change_echo'] = 'Passwort erfolgreich geändert.';
         } else {
-            echo "Fehler beim Aktualisieren des Passworts: " . $conn->error;
+            $_SESSION['change_error'] = 'Fehler beim Aktualisieren des Passworts: ' . $conn->error;
         }
+        header("Location: ../pages/profile.php");
+        exit();
     } else {
         // Profil bearbeiten
         $fields = [];
@@ -82,7 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Wenn keine Felder aktualisiert werden sollen, abbrechen
         if (empty($fields)) {
-            die("Keine Änderungen vorgenommen.");
+            $_SESSION['change_error'] = "Keine Änderungen vorgenommen.";
+            header("Location: ../pages/profile.php");
+            exit();
         }
 
         // Baue die SQL-Abfrage dynamisch auf
@@ -94,13 +103,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param($types, ...$params);
 
         if ($stmt->execute()) {
-            echo "Profil erfolgreich aktualisiert.";
+            $_SESSION['change_echo'] = 'Profil erfolgreich aktualisiert.';
             if (!empty($_POST['username'])) {
                 $_SESSION['username'] = $_POST['username']; // Username in der Session aktualisieren
             }
         } else {
-            echo "Fehler beim Aktualisieren des Profils: " . $conn->error;
+            $_SESSION['change_error'] = 'Fehler beim Aktualisieren des Profils: ' . $conn->error;
         }
+        header("Location: ../pages/profile.php");
+        exit();
     }
 }
 ?>
