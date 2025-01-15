@@ -1,5 +1,4 @@
 <?php
-
 require_once '../config.php';
 include '../includes/header.php';
 
@@ -23,7 +22,6 @@ if ($_SESSION['role'] === 'admin') {
         <div class="welcome-actions">
             <a href="profile.php" class="action-button">Profil bearbeiten</a>
             <a href="reservation.php" class="action-button2">Zimmer reservieren</a>
-            <a href="upload.php" class="action-button2">Dateien hochladen</a>
         </div>
     </div>
 </body>
