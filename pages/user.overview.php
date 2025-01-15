@@ -81,11 +81,10 @@ include '../includes/header.php';
                         <td>${user.status}</td>
                         <td>
                             <button onclick="editUser(${user.id})">Bearbeiten</button>
-                            <button onclick="viewReservations(${user.id})">Reservierungen</button>
                         </td>
                     </tr>
                     <tr id="edit-row-${user.id}" style="display:none">
-                        <td colspan="9">
+                        <td colspan="8">
                             <form onsubmit="updateUser(event, ${user.id})">
                                 ${['salutation', 'firstname', 'lastname', 'username', 'email'].map(field => `
                                     <label>${field}: <input type="text" name="${field}" value="${user[field]}" required></label>`).join('')}
@@ -133,16 +132,12 @@ include '../includes/header.php';
             }
         }
 
-        function viewReservations(userId) {
-            // Weiterleitung zur Reservierungsseite mit der Benutzer-ID
-            window.location.href = `reservation.overview.php?user_id=${userId}`;
-        }
-
         window.onload = fetchUsers;
     </script>
 </head>
 <body>
     <h1>Benutzerverwaltung</h1>
+    <button class="reservation-button" onclick="window.location.href='reservation.overview.php'">Alle Reservierungen</button>
     <table>
         <thead>
             <tr>

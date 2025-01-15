@@ -511,3 +511,28 @@ tr[id^="edit-row-"] {
     text-align: center;
     margin-bottom: 15px;
 }
+.reservation-button {
+    background-color: #007BFF;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px; /* Größere Schriftgröße */
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 25px; /* Mehr Abstand zur Tabelle */
+    display: inline-block;
+}
+
+.reservation-button:hover {
+    background-color: #0056b3;
+}
+
+.reservation-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(38, 143, 255, 0.5);
+}
+
+.reservation-button:active {
+    background-color: #003f7f;
+}

@@ -16,7 +16,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
         <h1>Willkommen, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
         <p>Sie sind erfolgreich eingeloggt.</p>
         <div class="welcome-actions">
-            <a href="user.overview.php" class="action-button">User</a>
+            <a href="user.overview.php" class="action-button">Benutzerverwaltung</a>
             <a href="reservation.overview.php" class="action-button2">Reservierungen</a>
             <a href="newsbeitrag.overview.php" class="action-button2">News-Beiträge Übersicht</a>
         </div>
