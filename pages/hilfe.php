@@ -4,7 +4,7 @@ include '../includes/header.php';
 ?>
 
     <div class="benutzeranleitung">
-        <h1>Benutzeranleitung für die Hotelwebsite</h1>
+        <h1 class="mb-4" style="color: #000; font-weight: bold;">Benutzeranleitung für die Hotelwebsite</h1>
 
         <h2>Willkommen zur Hotelwebsite!<br>
             Diese Anleitung führt Sie durch die wichtigsten Funktionen, um Ihre
